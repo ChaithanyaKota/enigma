@@ -42,7 +42,48 @@ public:
 };
 
 class EnigmaMachine { 
-    
+private: 
+    vector<Rotor> rotors; 
+
+public: 
+    EnigmaMachine(const vector<vector<int>>& rotorConfig) { 
+        for(const auto &wiring: rotorConfig) {
+            rotors.emplace_back(wiring);
+        }
+    }
+
+    void setRotorPositions(const vector<int> positions) { 
+        for(int i = 0; i < rotors.size(); i++) { 
+            rotors[i].setStartPositions(positions[i]);
+        }
+    }
+
+    char encrypt (char input) { 
+        int output = input - 'A';
+
+        // Encryption 
+        for(auto &rotor : rotors) { 
+            output = rotor.encrypt(output);
+        }
+
+        // Reflector 
+        output = (output + 13) % 26;
+
+        // Reverse Encryption
+        for (auto it = rotors.rbegin(); it != rotors.rend(); ++it) {
+            output = it->reverseEncrypt(output);
+        }
+
+        return static_cast<char>(output + 'A');
+
+        void rotateRotors() { 
+            rotors.front().rotate();
+            
+            for(int i = 0; i < rotors.size() - 1; i++) { 
+                if((rotors[i].getPosition() - 'A') % 26 )
+            }
+        }
+    }
 };
 
 int main() { 
