@@ -25,8 +25,14 @@ public:
     }
 
     // When char goes through rotors after passing through reflector
-    int reversEncrypt(int input) { 
-        
+    int reverseEncrypt(int input) { 
+        int offset = position - 'A';
+        auto it = find(wiring.begin(), wiring.end(), input);
+        int output = distance(wiring.begin(), it);
+
+        output = (output - offset + 26) % 26;
+
+        return output; 
     }
 
     void rotate() { 
@@ -36,7 +42,7 @@ public:
 };
 
 class EnigmaMachine { 
-
+    
 };
 
 int main() { 
