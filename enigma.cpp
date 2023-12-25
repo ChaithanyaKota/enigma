@@ -124,11 +124,12 @@ int main() {
     EnigmaMachine enigma(rotorConfig);
     vector<int> rotorPositions = {0, 0, 0};
 
-    enigma.setRotorPositions(rotorPositions);
-
     string message = "HELLO";
     string encryptedMessage;
+    string decryptedMessage; 
 
+    // Encryption
+    enigma.setRotorPositions(rotorPositions);
     for(char c: message) { 
         if(isalpha(c)) { 
             char encryptedChar = enigma.encrypt(toupper(c));
@@ -140,8 +141,21 @@ int main() {
         }
     }
 
+    //Decryption
+    enigma.setRotorPositions(rotorPositions); // Reset rotor positions
+    for (char c : encryptedMessage) {
+        if (isalpha(c)) {
+            enigma.rotateRotors();
+            char decryptedChar = enigma.decrypt(c);
+            decryptedMessage += decryptedChar;
+        } else {
+            decryptedMessage += c;
+        }
+    }
+
     cout << "Original Message: " << message << endl;
     cout << "Encrypted Message: " << encryptedMessage << endl;
+    cout << "Decrypted Message: " << decryptedMessage << endl;
 
     return 0; 
 }
