@@ -86,6 +86,23 @@ public:
         return static_cast<char>(output + 'A');
     }
 
+    char decrypt(char input) {
+        int output = input - 'A';
+
+        for (auto& rotor : rotors) {
+            output = rotor.reverseEncrypt(output);
+        }
+
+        // Reflector
+        output = (output + 13) % 26;
+
+        for (auto& rotor : rotors) {
+            output = rotor.encrypt(output);
+        }
+
+        return static_cast<char>(output + 'A');
+    }
+
     void rotateRotors() { 
             rotors.front().rotate();
 
