@@ -8,9 +8,10 @@ class Rotor {
 private: 
     vector<int> wiring; 
     int position; 
+    int notch;
 
 public: 
-    Rotor(const vector<int> &wiring) : wiring(wiring), position(0) {}
+    Rotor(const vector<int> &wiring, int notch) : wiring(wiring), position(0), notch(notch) {}
 
     void setStartPositions(int startPos) { 
         position = startPos % 26;
@@ -38,6 +39,14 @@ public:
     void rotate() { 
         position = (position + 1) % 26; 
     }
+
+    int getPosition() const {
+        return position; 
+    }
+
+    int getNotch() const {
+        return notch;
+    }
     
 };
 
@@ -48,7 +57,7 @@ private:
 public: 
     EnigmaMachine(const vector<vector<int>>& rotorConfig) { 
         for(const auto &wiring: rotorConfig) {
-            rotors.emplace_back(wiring);
+            rotors.emplace_back(wiring, 0); // Notches set to 0
         }
     }
 
@@ -75,17 +84,41 @@ public:
         }
 
         return static_cast<char>(output + 'A');
+    }
 
-        void rotateRotors() { 
+    void rotateRotors() { 
             rotors.front().rotate();
-            
+
             for(int i = 0; i < rotors.size() - 1; i++) { 
-                if((rotors[i].getPosition() - 'A') % 26 )
+                if((rotors[i].getPosition() - 'A') % 26 == rotors[i+1].getNotch()) { 
+                    rotors[i+1].rotate();
+                }
             }
         }
-    }
 };
 
 int main() { 
+    vector<vector<int>> rotorConfig = {
+        {0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25},
+        {0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25},
+        {0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25}
+    };
+
+    EnigmaMachine enigma(rotorConfig);
+    vector<int> rotorPositions = {0, 0, 0};
+
+    enigma.setRotorPositions(rotorPositions);
+
+    string message = "HELLO";
+    string encryptedMessage;
+
+    for(char c: message) { 
+        if(isalpha(c)) { 
+            char encryptedChar = enigma.encrypt(toupper(c));
+            encryptedMessage += encryptedChar;
+            enigma.rotateRotors();
+
+        }
+    }
 
 }
