@@ -117,8 +117,14 @@ int main() {
             char encryptedChar = enigma.encrypt(toupper(c));
             encryptedMessage += encryptedChar;
             enigma.rotateRotors();
-
+        }
+        else { 
+            encryptedMessage += c; 
         }
     }
 
+    cout << "Original Message: " << message << endl;
+    cout << "Encrypted Message: " << encryptedMessage << endl;
+
+    return 0; 
 }
