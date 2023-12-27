@@ -17,7 +17,7 @@ public:
         position = startPos % 26;
     }
 
-    // When character goes throgh rotors for the first time
+    // For when character goes throgh rotors for the first time
     int encrypt(int input) {
         int offset = position - 'A';
         int output = (input + offset) % 26;
@@ -86,23 +86,6 @@ public:
         return static_cast<char>(output + 'A');
     }
 
-    char decrypt(char input) {
-        int output = input - 'A';
-
-        for (auto& rotor : rotors) {
-            output = rotor.reverseEncrypt(output);
-        }
-
-        // Reflector
-        output = (output + 13) % 26;
-
-        for (auto& rotor : rotors) {
-            output = rotor.encrypt(output);
-        }
-
-        return static_cast<char>(output + 'A');
-    }
-
     void rotateRotors() { 
             rotors.front().rotate();
 
@@ -126,7 +109,6 @@ int main() {
 
     string message = "HELLO";
     string encryptedMessage;
-    string decryptedMessage; 
 
     // Encryption
     enigma.setRotorPositions(rotorPositions);
@@ -141,21 +123,10 @@ int main() {
         }
     }
 
-    //Decryption
-    enigma.setRotorPositions(rotorPositions); // Reset rotor positions
-    for (char c : encryptedMessage) {
-        if (isalpha(c)) {
-            enigma.rotateRotors();
-            char decryptedChar = enigma.decrypt(c);
-            decryptedMessage += decryptedChar;
-        } else {
-            decryptedMessage += c;
-        }
-    }
 
     cout << "Original Message: " << message << endl;
     cout << "Encrypted Message: " << encryptedMessage << endl;
-    cout << "Decrypted Message: " << decryptedMessage << endl;
+
 
     return 0; 
 }
