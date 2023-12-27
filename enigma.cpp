@@ -19,20 +19,14 @@ public:
 
     // For when character goes throgh rotors for the first time
     int encrypt(int input) {
-        int output = wiring[input + position];
+        int output = wiring[(input + position) % 26];
 
         return output + 'A';
     }
 
     // When char goes through rotors after passing through reflector
     int reverseEncrypt(int input) { 
-        int offset =  'A' - position;
-        auto it = find(wiring.begin(), wiring.end(), input);
-        int output = distance(wiring.begin(), it);
-
-        output = (output - offset + 26) % 26;
-
-        return output; 
+        
     }
 
     void rotate() { 
