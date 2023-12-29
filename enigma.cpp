@@ -17,16 +17,10 @@ public:
         position = startPos % 26;
     }
 
-    // For when character goes throgh rotors for the first time
     int encrypt(int input) {
         int output = wiring[(input + position) % 26];
 
-        return output + 'A';
-    }
-
-    // When char goes through rotors after passing through reflector
-    int reverseEncrypt(int input) { 
-        
+        return output;
     }
 
     void rotate() { 
@@ -48,18 +42,21 @@ private:
     vector<Rotor> rotors; 
 
 public: 
+    // Wiring
     EnigmaMachine(const vector<vector<int>>& rotorConfig) { 
         for(const auto &wiring: rotorConfig) {
             rotors.emplace_back(wiring, 0); // Notches set to 0
         }
     }
 
+    // Rotor start positions
     void setRotorPositions(const vector<int> positions) { 
         for(int i = 0; i < rotors.size(); i++) { 
             rotors[i].setStartPositions(positions[i]);
         }
     }
 
+    //Encryption
     char encrypt (char input) { 
         int output = input - 'A';
 
@@ -72,21 +69,16 @@ public:
         output = (output + 13) % 26;
 
         // Reverse Encryption
-        for (auto it = rotors.rbegin(); it != rotors.rend(); ++it) {
-            output = it->reverseEncrypt(output);
-        }
+        for (auto rit = rotors.rbegin(); rit != rotors.rend(); ++rit) {
+               output = rit->encrypt(output);
+           }
 
-        return static_cast<char>(output + 'A');
+        return (static_cast<char>(output + 'A'));
     }
 
+    // Rotating rotors
     void rotateRotors() { 
-            rotors.front().rotate();
-
-            for(int i = 0; i < rotors.size() - 1; i++) { 
-                if((rotors[i].getPosition() - 'A') % 26 == rotors[i+1].getNotch()) { 
-                    rotors[i+1].rotate();
-                }
-            }
+            
         }
 };
 
@@ -102,6 +94,7 @@ int main() {
 
     string message = "HELLO";
     string encryptedMessage;
+    string decryptedMessage;
 
     // Encryption
     enigma.setRotorPositions(rotorPositions);
@@ -109,16 +102,32 @@ int main() {
         if(isalpha(c)) { 
             char encryptedChar = enigma.encrypt(toupper(c));
             encryptedMessage += encryptedChar;
-            enigma.rotateRotors();
+
+            // enigma.rotateRotors();
         }
         else { 
             encryptedMessage += c; 
         }
     }
 
+    // Decryption
+    enigma.setRotorPositions(rotorPositions);
+    for(char c: encryptedMessage) { 
+        if(isalpha(c)) { 
+            char decryptedChar = enigma.encrypt(toupper(c));
+            decryptedMessage += decryptedChar;
+
+            // enigma.rotateRotors();
+        }
+        else { 
+            decryptedMessage += c; 
+        }
+    }
+
 
     cout << "Original Message: " << message << endl;
     cout << "Encrypted Message: " << encryptedMessage << endl;
+    cout << "Decrypted Message: " << decryptedMessage << endl;
 
 
     return 0; 
